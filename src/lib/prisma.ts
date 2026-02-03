@@ -1,9 +1,12 @@
+
+
+
 // Import PrismaClient (database client)
 import  { PrismaClient }  from "@prisma/client";
 
 // Function that creates a new PrismaClient instance
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return new PrismaClient({});
 };
 
 // Tell TypeScript that we are adding a global variable
@@ -20,7 +23,6 @@ const prisma =
 // Export Prisma so it can be used in other files
 
 export default prisma;
-
 
 // In development, save PrismaClient on globalThis
 // to prevent multiple database connections during hot reload
