@@ -21,6 +21,7 @@ const prisma =
 
 export default prisma;
 
+
 // In development, save PrismaClient on globalThis
 // to prevent multiple database connections during hot reload
 if (process.env.NODE_ENV !== "production") {
