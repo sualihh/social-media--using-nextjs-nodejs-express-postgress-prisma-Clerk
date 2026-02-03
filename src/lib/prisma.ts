@@ -1,5 +1,5 @@
 // Import PrismaClient (database client)
-import { PrismaClient } from "@prisma/client/extension.js";
+import  { PrismaClient }  from "@prisma/client";
 
 // Function that creates a new PrismaClient instance
 const prismaClientSingleton = () => {
@@ -8,9 +8,9 @@ const prismaClientSingleton = () => {
 
 // Tell TypeScript that we are adding a global variable
 // called prismaGlobal to globalThis
-declare global {
-  var prismaGlobal: ReturnType<typeof prismaClientSingleton>;
-}
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+}   & typeof global;
 
 // Use existing PrismaClient if it exists,
 // otherwise create a new one
@@ -18,6 +18,7 @@ const prisma =
   globalThis.prismaGlobal ?? prismaClientSingleton();
 
 // Export Prisma so it can be used in other files
+
 export default prisma;
 
 // In development, save PrismaClient on globalThis
