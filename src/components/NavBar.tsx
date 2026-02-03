@@ -8,7 +8,7 @@ import { syncUser } from '@/action/user.action'
 async function NavBar() {
   const user = await currentUser()
 
-  if (user) await syncUser()
+  if (user) await syncUser()// post request
   return (
     <nav className="sticky top-0 w-full border-b bg-background/95 backdrop-blur [backdrop-filter]:bg-background/60 z-50">
       <div className='max-w-7xl mx-auto px-4'>
