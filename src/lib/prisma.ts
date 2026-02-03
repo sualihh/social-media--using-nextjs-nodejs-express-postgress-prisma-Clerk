@@ -1,6 +1,4 @@
 
-
-
 // Import PrismaClient (database client)
 import  { PrismaClient }  from "@prisma/client";
 
