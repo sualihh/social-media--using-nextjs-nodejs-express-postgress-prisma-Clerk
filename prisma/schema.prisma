@@ -13,6 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 
+<<<<<<< HEAD
 model User {
   id        String   @id @default(cuid())//collision identifies unique ids
   email     String   @unique
@@ -125,3 +126,5 @@ enum NotificationType {
   COMMENT
   FOLLOW
 }
+=======
+>>>>>>> 1a74d4d0ff1eb73e886f996a819c016e89e73165
