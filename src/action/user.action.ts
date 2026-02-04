@@ -2,7 +2,8 @@
 
 import prisma from "@/lib/prisma"
 import { auth, currentUser } from "@clerk/nextjs/server"
-import { get } from "http"
+import { log } from "console"
+import { revalidatePath } from "next/cache"
 
 export async function syncUser() {
 
@@ -60,5 +61,102 @@ export async function getDbUserId() {
 
         const user= await getUserByClerkId(clerkId)
         if (!user) throw new Error("User not found in database")
+            console.log("user.id:", user.id);
+            
         return user.id
+}
+
+export async function getRandomUser() {
+    
+    try {
+        const userId = await getDbUserId();
+
+        // find random user he/she is not following and not you
+        const randomUsers = await prisma.user.findMany({
+            where: {
+                AND: [
+                    { NOT: { id: userId } },
+                    {
+                        NOT: {
+                            followers: {
+                                some: {
+                                    followerID: userId
+                                }
+                            }
+                        }
+                    }]
+        },
+        select: {
+            id: true,
+            name: true,
+            username: true, 
+            image: true,
+            _count: {
+                select: {
+                    followers: true,
+                 },
+             }
+            },  
+        take: 3,
+    })   
+
+
+    return randomUsers
+    } catch (error) {
+        console.log("Error in getRandomUser:", error);  
+        return []
+    }
+}
+
+ export async function toogleFollow(targetUserId:string) {
+    try {
+        const userId = await getDbUserId()
+        
+        if(userId === targetUserId ) throw new Error("You cannot follow yourself")
+
+            const existingFolow = await prisma.follows.findUnique({
+                where:{
+                    followerID_followingID: {
+                        followerID: userId,
+                        followingID: targetUserId, 
+                    }
+                }
+            })
+
+            if (existingFolow) {
+                //unfollow
+                await prisma.follows.delete({
+                where:{
+                    followerID_followingID: {
+                        followerID: userId,
+                        followingID: targetUserId, 
+                    }
+                }
+            })
+
+            } else {
+                //  follow by transaction
+                await prisma.$transaction([
+                    prisma.follows.create({
+                        data: { 
+                            followerID: userId,
+                            followingID: targetUserId,
+                         }
+                    }),
+                    prisma.notification.create({
+                        data: {
+                            userID: targetUserId,
+                            type: "FOLLOW",
+                            creatorID: userId,
+                        }
+                    })
+                ])  
+            }
+            revalidatePath("/")
+            return {success: true}
+    } catch (error) {
+        console.log("Error in toogleFollow:", error);
+        return {success: false, error: "Error toggling follow status"
+    }
+ }
 }
