@@ -36,7 +36,6 @@ async function PostCard({post, dbuserId} : {post: Post, dbuserId: string | null}
     if (!newComment.trim() || isCommenting) return;
     try {
       setIsCommenting(true);
-      
       const result = await createComment(post.id, newComment);
       if (result?.success) {
         toast.success("Comment posted successfully");
