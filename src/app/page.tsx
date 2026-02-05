@@ -9,7 +9,7 @@ import { currentUser } from "@clerk/nextjs/server";
 export default async function Home() {
   const user =await currentUser();
   const posts= await getPosts();
-  const dbuserId = getDbUserId();
+  const dbUserId = await getDbUserId();
   
   console.log(posts);
   
@@ -20,7 +20,7 @@ export default async function Home() {
 
         <div className="space-y-6">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} dbuserId={dbuserId} />
+            <PostCard key={post.id} post={post} dbUserId={dbUserId} />
           ))}
             
               

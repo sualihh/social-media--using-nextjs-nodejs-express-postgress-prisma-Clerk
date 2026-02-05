@@ -13,14 +13,14 @@ import { DeleteAlertDialog } from "./DeleteAlertDialog";
 type Posts = Awaited<ReturnType<typeof getPosts>>
 type Post = Posts[number]
 
-async function PostCard({post, dbuserId} : {post: Post, dbuserId: string | null}) {
+ function PostCard({post, dbUserId} : {post: Post, dbUserId: string | null}) {
 
     const {user} = useUser()
     const [newComment, setNewComment] = useState("")
     const [isCommenting, setIsCommenting] = useState(false)
     const [isLiking, setIsLiking] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
-    const [hasLiked, setHasLiked] = useState(post.likes.some((like) => like.userID === dbuserId))
+    const [hasLiked, setHasLiked] = useState(post.likes.some((like) => like.userID === dbUserId))
     const [optmisticLikes, setOptmisticLikes] = useState(post._count.likes)
 
 
@@ -33,7 +33,7 @@ async function PostCard({post, dbuserId} : {post: Post, dbuserId: string | null}
       await toggleLike(post.id);
     } catch (error) {
       setOptmisticLikes(post._count.likes);
-      setHasLiked(post.likes.some((like) => like.userID === dbuserId));
+      setHasLiked(post.likes.some((like) => like.userID === dbUserId));
     } finally {
       setIsLiking(false);
     }
@@ -99,7 +99,7 @@ async function PostCard({post, dbuserId} : {post: Post, dbuserId: string | null}
                   </div>
                 </div>
                 {/* Check if current user is the post author */}
-                {dbuserId === post.author.id && (
+                {dbUserId === post.author.id && (
                   <DeleteAlertDialog isDeleting={isDeleting} onDelete={handleDeletePost} />
                 )}
               </div>

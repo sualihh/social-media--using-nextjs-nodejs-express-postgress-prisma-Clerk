@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2Icon, Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 
 interface DeleteAlertDialogProps {
   isDeleting: boolean;
@@ -33,7 +33,7 @@ export function DeleteAlertDialog({
         <Button
           variant="ghost"
           size="sm"
-          className="text-muted-foreground hover:text-red-500 -mr-2"
+          className="text-muted-foreground hover:text-red-500 "
         >
           {isDeleting ? (
             <Loader2Icon className="size-4 animate-spin" />
