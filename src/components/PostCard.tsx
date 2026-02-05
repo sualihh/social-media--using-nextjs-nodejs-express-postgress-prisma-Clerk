@@ -1,3 +1,5 @@
+"use client";
+
 import { createComment, deletePost, getPosts, toggleLike } from "@/action/post.action";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
@@ -5,6 +7,8 @@ import { toast } from "react-hot-toast";
 import { Card, CardContent } from "./ui/card";
 import Link from "next/dist/client/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { formatDistanceToNow } from "date-fns";
+import { DeleteAlertDialog } from "./DeleteAlertDialog";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>
 type Post = Posts[number]
@@ -78,10 +82,40 @@ async function PostCard({post, dbuserId} : {post: Post, dbuserId: string | null}
                 <AvatarImage src={post.author.image ?? "/avatar.png"} />
               </Avatar>
             </Link>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 truncate">
+                  <Link
+                    href={`/profile/${post.author.username}`}
+                    className="font-semibold truncate"
+                  >
+                    {post.author.name}
+                  </Link>
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <Link href={`/profile/${post.author.username}`}>@{post.author.username}</Link>
+                    <span>•</span>
+                    <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+                  </div>
+                </div>
+                {/* Check if current user is the post author */}
+                {dbuserId === post.author.id && (
+                  <DeleteAlertDialog isDeleting={isDeleting} onDelete={handleDeletePost} />
+                )}
+              </div>
+              <p className="mt-2 text-sm text-foreground break-words">{post.content}</p>
+            </div>
           </div>
-        </div>
+
+          {/* POST IMAGE */}
+          {post.image && (
+            <div className="rounded-lg overflow-hidden">
+              <img src={post.image} alt="Post content" className="w-full h-auto object-cover" />
+            </div>
+          )}
+
+          </div>
       </CardContent>
-      post
     </Card>
   )
 }
