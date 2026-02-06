@@ -1,7 +1,7 @@
 "use client";
 
-import { getProfileByUsername, getUserPosts, updateProfile } from "@/actions/profile.action";
-import { toogleFollow } from "@/actions/user.action";
+import { getProfileByUsername, getUserPosts, updateProfile } from "@/action/profile.action";
+import { toogleFollow } from "@/action/user.action";
 import PostCard from "@/components/PostCard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -77,7 +77,7 @@ function ProfilePageClient({
 
     try {
       setIsUpdatingFollow(true);
-      await toggleFollow(user.id);
+      await toogleFollow(user.id);
       setIsFollowing(!isFollowing);
     } catch (error) {
       toast.error("Failed to update follow status");
