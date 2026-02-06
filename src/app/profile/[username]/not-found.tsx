@@ -10,6 +10,7 @@ export default function NotFound() {
         <CardContent className="pt-6">
           <div className="text-center space-y-6">
             {/* LARGE 404 TEXT */}
+            
             <p className="text-8xl font-bold text-primary font-mono">404</p>
 
             {/* MESSAGE */}
