@@ -68,6 +68,7 @@ function ProfilePageClient({
 
     
 
+
     const result = await updateProfile(formData);
     if (result.success) {
       setShowEditDialog(false);
