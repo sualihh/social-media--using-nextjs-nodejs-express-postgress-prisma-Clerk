@@ -87,12 +87,11 @@ function ProfilePageClient({
   };
 
   
-  
   const isOwnProfile =
     currentUser?.username === user.username ||
     currentUser?.emailAddresses[0].emailAddress.split("@")[0] === user.username;
 
-
+    
   const formattedDate = format(new Date(user.createdAt), "MMMM yyyy");
 
   return (
