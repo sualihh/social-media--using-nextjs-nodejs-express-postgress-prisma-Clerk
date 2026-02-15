@@ -66,7 +66,7 @@ function ProfilePageClient({
       formData.append(key, value);
     });
 
-    
+
 
 
     const result = await updateProfile(formData);
@@ -75,6 +75,7 @@ function ProfilePageClient({
       toast.success("Profile updated successfully");
     }
   };
+  
 
   const handleFollow = async () => {
     if (!currentUser) return;
