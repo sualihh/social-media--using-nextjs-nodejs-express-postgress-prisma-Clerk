@@ -59,13 +59,14 @@ function ProfilePageClient({
     website: user.website || "",
   });
 
-  
+
   const handleEditSubmit = async () => {
     const formData = new FormData();
     Object.entries(editForm).forEach(([key, value]) => {
       formData.append(key, value);
     });
 
+    
 
     const result = await updateProfile(formData);
     if (result.success) {
