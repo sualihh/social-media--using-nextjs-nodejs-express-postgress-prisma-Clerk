@@ -64,6 +64,7 @@ function ProfilePageClient({
     Object.entries(editForm).forEach(([key, value]) => {
       formData.append(key, value);
     });
+    
 
     const result = await updateProfile(formData);
     if (result.success) {
@@ -86,7 +87,7 @@ function ProfilePageClient({
     }
   };
 
-  
+
   
   const isOwnProfile =
     currentUser?.username === user.username ||
