@@ -36,7 +36,6 @@ function MobileNavbar() {
 
       <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
           <Button variant="ghost" size="icon">
-            <MenuIcon className="h-5 w-5" />
         </SheetTrigger>
         <SheetContent side="right" className="w-[300px]">
           <SheetHeader>
