@@ -43,7 +43,6 @@ function MobileNavbar() {
         <SheetContent side="right" className="w-[300px]">
           <nav className="flex flex-col space-y-4 mt-6">
             <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-              <Link href="/">
             </Button>
 
             {isSignedIn ? (
