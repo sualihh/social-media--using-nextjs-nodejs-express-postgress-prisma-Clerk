@@ -49,7 +49,6 @@ async function Sidebar() {
                   <p className="font-medium">{user._count.followers}</p>
                 </div>
               </div>
-              <Separator className="my-4" />
             </div>
 
             <div className="w-full space-y-2 text-sm">
