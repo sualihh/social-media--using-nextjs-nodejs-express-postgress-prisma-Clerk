@@ -25,6 +25,7 @@ async function Sidebar() {
               href={`/profile/${user.username}`}
               className="flex flex-col items-center justify-center"
             >
+              <Avatar className="w-20 h-20 border-2 ">
 
               <div className="mt-4 space-y-1">
                 <h3 className="font-semibold">{user.name}</h3>
