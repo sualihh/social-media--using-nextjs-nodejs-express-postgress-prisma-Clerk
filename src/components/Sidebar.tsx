@@ -47,6 +47,7 @@ async function Sidebar() {
                 <Separator orientation="vertical" />
                 <div>
                   <p className="font-medium">{user._count.followers}</p>
+                  <p className="text-xs text-muted-foreground">Followers</p>
                 </div>
               </div>
               <Separator className="my-4" />
