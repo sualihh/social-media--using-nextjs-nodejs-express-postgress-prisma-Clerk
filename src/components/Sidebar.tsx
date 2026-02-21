@@ -45,6 +45,7 @@ async function Sidebar() {
                   <p className="text-xs text-muted-foreground">Following</p>
                 </div>
                 <div>
+                  <p className="font-medium">{user._count.followers}</p>
                 </div>
               </div>
             </div>
