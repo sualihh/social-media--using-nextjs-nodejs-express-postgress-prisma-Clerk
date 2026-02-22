@@ -86,7 +86,6 @@ const UnAuthenticatedSidebar = () => (
         </p>
         <SignInButton mode="modal">
           <Button className="w-full" variant="outline">
-          </Button>
         </SignInButton>
         <SignUpButton mode="modal">
           <Button className="w-full mt-2" variant="default">
