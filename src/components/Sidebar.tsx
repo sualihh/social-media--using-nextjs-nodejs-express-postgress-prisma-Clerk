@@ -82,7 +82,8 @@ const UnAuthenticatedSidebar = () => (
   <div className="sticky top-20">
     <Card>
       <CardContent>
-        
+        <p className="text-center text-muted-foreground mb-4">
+        </p>
         <SignInButton mode="modal">
         </SignInButton>
         <SignUpButton mode="modal">
