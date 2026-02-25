@@ -84,7 +84,8 @@ const UnAuthenticatedSidebar = () => (
       <CardHeader>
       </CardHeader>
       <CardContent>
-        
+        <p className="text-center text-muted-foreground mb-4">
+        </p>
         <SignInButton mode="modal">
           
         </SignInButton>
