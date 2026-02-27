@@ -112,7 +112,11 @@ type Post = Posts[number]
           </div>
 
           {/* POST IMAGE */}
-        
+          {post.image && (
+            <div className="rounded-lg overflow-hidden">
+              <img src={post.image} alt="Post content" className="w-full h-auto object-cover" />
+            </div>
+          )}
 
 
           {/* LIKE & COMMENT BUTTONS */}
