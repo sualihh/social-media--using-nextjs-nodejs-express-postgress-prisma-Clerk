@@ -146,17 +146,7 @@ type Post = Posts[number]
               </SignInButton>
             )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground gap-2 hover:text-blue-500"
-              onClick={() => setShowComments((prev) => !prev)}
-            >
-              <MessageCircleIcon
-                className={`size-5 ${showComments ? "fill-blue-500 text-blue-500" : ""}`}
-              />
-              <span>{post.comments.length}</span>
-            </Button>
+           
           </div>
 
           {/* COMMENTS SECTION */}
