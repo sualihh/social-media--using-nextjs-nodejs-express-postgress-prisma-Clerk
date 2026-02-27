@@ -138,12 +138,7 @@ type Post = Posts[number]
                 <span>{optmisticLikes}</span>
               </Button>
             ) : (
-              <SignInButton mode="modal">
-                <Button variant="ghost" size="sm" className="text-muted-foreground gap-2">
-                  <HeartIcon className="size-5" />
-                  <span>{optmisticLikes}</span>
-                </Button>
-              </SignInButton>
+             
             )}
 
             <Button
