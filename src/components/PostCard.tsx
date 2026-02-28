@@ -60,7 +60,19 @@ type Post = Posts[number]
   };
 
   
-  
+  const handleDeletePost = async () => {
+    if (isDeleting) return;
+    try {
+      setIsDeleting(true);
+      const result = await deletePost(post.id);
+      if (result.success) toast.success("Post deleted successfully");
+      else throw new Error(result.error);
+    } catch (error) {
+      toast.error("Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
 
   
