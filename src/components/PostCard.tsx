@@ -59,6 +59,7 @@ type Post = Posts[number]
     }
   };
 
+  
   const handleDeletePost = async () => {
     if (isDeleting) return;
     try {
