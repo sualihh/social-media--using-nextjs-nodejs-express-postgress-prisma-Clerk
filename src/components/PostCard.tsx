@@ -43,7 +43,15 @@ type Post = Posts[number]
     }
   };
 
-  
+  const handleAddComment = async () => {
+    if (!newComment.trim() || isCommenting) return;
+    try {
+      setIsCommenting(true);
+      const result = await createComment(post.id, newComment);
+      if (result?.success) {
+        toast.success("Comment posted successfully");
+        setNewComment("");
+      }
     } catch (error) {
       toast.error("Failed to add comment");
     } finally {
