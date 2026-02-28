@@ -28,20 +28,7 @@ type Post = Posts[number]
     const [showComments, setShowComments] = useState(false)
 
 
-    const handleLike = async () => {
-    if (isLiking) return;
-    try {
-      setIsLiking(true);
-      setHasLiked((prev) => !prev);
-      setOptmisticLikes((prev) => prev + (hasLiked ? -1 : 1));
-      await toggleLike(post.id);
-    } catch (error) {
-      setOptmisticLikes(post._count.likes);
-      setHasLiked(post.likes.some((like) => like.userID === dbUserId));
-    } finally {
-      setIsLiking(false);
-    }
-  };
+  
 
   const handleAddComment = async () => {
     if (!newComment.trim() || isCommenting) return;
