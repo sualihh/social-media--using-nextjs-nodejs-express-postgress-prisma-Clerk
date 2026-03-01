@@ -16,7 +16,6 @@ async function NavBar() {
             <div className='flex items-center'>
                 <Link href='/' className="text-xl font-bold text-primary font-sans-mono tracking-wider">Social Media</Link>
             </div>
-            <DesktopNavbar />
             <MobileNavbar />
         </div>
       </div>
