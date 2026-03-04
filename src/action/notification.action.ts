@@ -48,7 +48,6 @@ export async function getNotifications() {
   }
 }
 
-
 export async function markNotificationsAsRead(notificationIds: string[]) {
   try {
     await prisma.notification.updateMany({
