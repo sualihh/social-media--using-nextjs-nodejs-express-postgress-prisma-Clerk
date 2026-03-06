@@ -28,6 +28,7 @@ export async function createPost(content: string, image: string) {
 
 
 
+
 export async function toggleLike(postId: string) {
   try {
     const userId = await getDbUserId();
