@@ -78,69 +78,7 @@ export async function getPosts() {
     }
 }
 
-export async function toggleLike(postId: string) {
-  try {
-    const userId = await getDbUserId();
-    if (!userId) return;
 
-    // check if like exists
-    const existingLike = await prisma.like.findUnique({
-      where: {
-        postID_userID: {
-          userID: userId,
-          postID: postId,
-        },
-      },
-    });
-
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-      select: { authorID: true },
-    });
-
-    if (!post) throw new Error("Post not found");
-
-    if (existingLike) {
-      // unlike
-      await prisma.like.delete({
-        where: {
-          postID_userID: {
-            userID: userId,
-            postID: postId,
-          },
-        },
-      });
-    } else {
-      // like and create notification (only if liking someone else's post)
-      await prisma.$transaction([
-        prisma.like.create({
-          data: {
-            userID: userId,
-            postID: postId,
-          },
-        }),
-        ...(post.authorID !== userId
-          ? [
-              prisma.notification.create({
-                data: {
-                  type: "LIKE",
-                  userID: post.authorID, // recipient (post author)
-                  creatorID: userId, // person who liked
-                  postID: postId,
-                },
-              }), 
-            ]
-          : []),
-      ]);
-    }
-
-    revalidatePath("/");
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to toggle like:", error);
-    return { success: false, error: "Failed to toggle like" };
-  }
-}
 
 
 export async function createComment(postId: string, content: string) {
