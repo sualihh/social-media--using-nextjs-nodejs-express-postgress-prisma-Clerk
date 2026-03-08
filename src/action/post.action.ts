@@ -143,6 +143,54 @@ export async function toggleLike(postId: string) {
 }
 
 
+export async function createComment(postId: string, content: string) {
+  try {
+    const userId = await getDbUserId();
+
+    if (!userId) return;
+    if (!content) throw new Error("Content is required");
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorID: true },
+    });
+
+    if (!post) throw new Error("Post not found");
+
+    // Create comment and notification in a transaction
+    const [comment] = await prisma.$transaction(async (tx) => {
+      // Create comment first
+      const newComment = await tx.comment.create({
+        data: {
+          content,
+          authorID: userId,
+          postID: postId,
+        },
+      });
+
+      // Create notification if commenting on someone else's post
+      if (post.authorID !== userId) {
+        await tx.notification.create({
+          data: {
+            type: "COMMENT",
+            userID: post.authorID,
+            creatorID: userId,
+            postID: postId,
+            comentID: newComment.id,
+          },
+        });
+      }
+
+      return [newComment];
+    });
+
+    revalidatePath(`/`);
+    return { success: true, comment };
+  } catch (error) {
+    console.error("Failed to create comment:", error);
+    return { success: false, error: "Failed to create comment" };
+  }
+}
 
 export async function deletePost(postId: string) {
   try {
