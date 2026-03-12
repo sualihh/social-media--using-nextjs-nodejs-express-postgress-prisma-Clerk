@@ -214,4 +214,3 @@ export async function deletePost(postId: string) {
     return { success: false, error: "Failed to delete post" };
   }
 }
-
