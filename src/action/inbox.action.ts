@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getDbUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@/generated/prisma";
 
 const personSelection = {
   id: true,
@@ -12,10 +13,11 @@ const personSelection = {
 } as const;
 
 export async function getInboxData() {
-  const userId = await getDbUserId();
-  if (!userId) return { currentUserId: null, contacts: [], conversations: [] };
-
+  let userId: string | null = null;
   try {
+    userId = await getDbUserId();
+    if (!userId) return { currentUserId: null, contacts: [], conversations: [] };
+
     const [contacts, conversations] = await Promise.all([
       prisma.user.findMany({
         where: { id: { not: userId }, username: { not: null } },
@@ -43,7 +45,18 @@ export async function getInboxData() {
     return { currentUserId: userId, contacts, conversations };
   } catch (error) {
     console.error("Failed to load inbox:", error);
-    throw new Error("Failed to load inbox");
+    const missingInboxTable =
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2021";
+
+    return {
+      currentUserId: userId,
+      contacts: [],
+      conversations: [],
+      error: missingInboxTable
+        ? "Inbox storage is not set up yet. Run “npm run db:push”, then refresh."
+        : "We couldn’t connect to your inbox. Check your connection and try again.",
+    };
   }
 }
 

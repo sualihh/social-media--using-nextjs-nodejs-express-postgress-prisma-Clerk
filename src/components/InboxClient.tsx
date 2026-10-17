@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowLeft, ArrowUp, LoaderCircle, MessageCircle, Search, Send } from "lucide-react";
+import { ArrowLeft, LoaderCircle, MessageCircle, Search, Send } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -411,7 +411,7 @@ export default function InboxClient({
               </div>
 
               <form onSubmit={handleSend} className="border-t bg-card p-3 sm:p-5">
-                <div className="flex items-end gap-2 rounded-2xl border bg-background p-2 pl-4 shadow-sm focus-within:ring-1 focus-within:ring-ring">
+                <div className="flex items-end gap-2 rounded-2xl border bg-background p-2 pl-4 shadow-sm focus-within:ring-2 focus-within:ring-ring/20">
                   <Textarea
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
@@ -421,33 +421,31 @@ export default function InboxClient({
                         event.currentTarget.form?.requestSubmit();
                       }
                     }}
-                    placeholder={`Message ${activeContact.name}...`}
-                    aria-label="Write a message"
+                    placeholder="Write a message..."
+                    aria-label={`Write a message to ${activeContact.name}`}
                     maxLength={2000}
-                    rows={1}
-                    className="max-h-32 min-h-10 resize-y border-0 bg-transparent px-0 py-2 shadow-none focus-visible:ring-0"
+                    rows={2}
+                    className="max-h-32 min-h-12 resize-none border-0 bg-transparent px-0 py-2.5 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-0"
                     disabled={isSending}
                   />
                   <Button
                     type="submit"
-                    size="icon"
-                    className="size-10 shrink-0 rounded-xl"
+                    className="h-10 shrink-0 gap-2 rounded-xl px-4"
                     disabled={!draft.trim() || isSending}
-                    aria-label="Send message"
                   >
                     {isSending ? (
                       <LoaderCircle className="size-4 animate-spin" />
                     ) : (
                       <Send className="size-4" />
                     )}
+                    <span>{isSending ? "Sending..." : "Send"}</span>
                   </Button>
                 </div>
                 <div className="mt-2 flex items-center justify-between px-1 text-[10px] text-muted-foreground">
-                  <span>
-                    <ArrowUp className="mr-1 inline size-3" />
-                    Enter to send · Shift + Enter for a new line
-                  </span>
-                  <span>{draft.length}/2000</span>
+                  <span>Press Enter to send · Shift + Enter for a new line</span>
+                  {draft.length > 1800 && (
+                    <span aria-live="polite">{draft.length}/2000</span>
+                  )}
                 </div>
               </form>
             </>
