@@ -224,9 +224,9 @@ export default function InboxClient({
 
   return (
     <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
-      <div className="grid min-h-[min(76vh,780px)] grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="grid h-[clamp(360px,65vh,620px)] min-h-0 grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)]">
         <aside
-          className={`border-b bg-white/70 md:border-b-0 md:border-r ${
+          className={`min-h-0 border-b bg-white/70 md:border-b-0 md:border-r ${
             activeConversationId ? "hidden md:flex" : "flex"
           } flex-col`}
         >
@@ -315,7 +315,7 @@ export default function InboxClient({
           </div>
         </aside>
 
-        <div className={`${activeConversationId ? "flex" : "hidden md:flex"} min-w-0 flex-col`}>
+        <div className={`${activeConversationId ? "flex" : "hidden md:flex"} min-h-0 min-w-0 flex-col`}>
           {activeContact ? (
             <>
               <header className="flex h-[76px] items-center gap-3 border-b px-4 sm:px-6">
@@ -349,7 +349,7 @@ export default function InboxClient({
                 </Link>
               </header>
 
-              <div className="flex flex-1 flex-col overflow-y-auto bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/[0.025] via-background to-background px-4 py-6 sm:px-7">
+              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/[0.025] via-background to-background px-4 py-6 sm:px-7">
                 {!isLoadingMessages && messages.length === 0 && (
                   <div className="mb-7 text-center">
                     <p className="text-xs font-medium text-muted-foreground">

@@ -14,50 +14,67 @@ const personSelection = {
 
 export async function getInboxData() {
   let userId: string | null = null;
-  try {
-    userId = await getDbUserId();
-    if (!userId) return { currentUserId: null, contacts: [], conversations: [] };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      userId = await getDbUserId();
+      if (!userId) return { currentUserId: null, contacts: [], conversations: [] };
 
-    const [contacts, conversations] = await Promise.all([
-      prisma.user.findMany({
-        where: { id: { not: userId }, username: { not: null } },
-        select: personSelection,
-        orderBy: { name: "asc" },
-        take: 200,
-      }),
-      prisma.conversation.findMany({
-        where: {
-          OR: [{ userOneID: userId }, { userTwoID: userId }],
-        },
-        include: {
-          userOne: { select: personSelection },
-          userTwo: { select: personSelection },
-          messages: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            select: { content: true, createdAt: true, senderID: true },
+      const [contacts, conversations] = await Promise.all([
+        prisma.user.findMany({
+          where: { id: { not: userId }, username: { not: null } },
+          select: personSelection,
+          orderBy: { name: "asc" },
+          take: 200,
+        }),
+        prisma.conversation.findMany({
+          where: {
+            OR: [{ userOneID: userId }, { userTwoID: userId }],
           },
-        },
-        orderBy: { updatedAt: "desc" },
-      }),
-    ]);
+          include: {
+            userOne: { select: personSelection },
+            userTwo: { select: personSelection },
+            messages: {
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: { content: true, createdAt: true, senderID: true },
+            },
+          },
+          orderBy: { updatedAt: "desc" },
+        }),
+      ]);
 
-    return { currentUserId: userId, contacts, conversations };
-  } catch (error) {
-    console.error("Failed to load inbox:", error);
-    const missingInboxTable =
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2021";
+      return { currentUserId: userId, contacts, conversations };
+    } catch (error) {
+      const isDatabaseUnavailable =
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P1001";
+      if (isDatabaseUnavailable && attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        continue;
+      }
 
-    return {
-      currentUserId: userId,
-      contacts: [],
-      conversations: [],
-      error: missingInboxTable
-        ? "Inbox storage is not set up yet. Run “npm run db:push”, then refresh."
-        : "We couldn’t connect to your inbox. Check your connection and try again.",
-    };
+      console.error("Failed to load inbox:", error);
+      const missingInboxTable =
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2021";
+
+      return {
+        currentUserId: userId,
+        contacts: [],
+        conversations: [],
+        error: missingInboxTable
+          ? "Inbox storage is not set up yet. Run “npm run db:push”, then refresh."
+          : "Hulux couldn’t reach the database. Please try again in a moment.",
+      };
+    }
   }
+
+  return {
+    currentUserId: userId,
+    contacts: [],
+    conversations: [],
+    error: "Hulux couldn’t reach the database. Please try again in a moment.",
+  };
 }
 
 export async function startConversation(recipientId: string) {
