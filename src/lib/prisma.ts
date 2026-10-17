@@ -1,6 +1,6 @@
 
 // Import PrismaClient (database client)
-import  { PrismaClient }  from "@prisma/client";
+import { PrismaClient } from "@/generated/prisma";
 
 // Function that creates a new PrismaClient instance
 const prismaClientSingleton = () => {

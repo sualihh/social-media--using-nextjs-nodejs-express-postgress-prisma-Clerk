@@ -70,36 +70,37 @@ export async function getRandomUser() {
     
     try {
         const userId = await getDbUserId();
-        
-        if(!userId) return [];
-        // find random user he/she is not following and not you
+
         const randomUsers = await prisma.user.findMany({
-            where: {
-                AND: [
-                    { NOT: { id: userId } },
-                    {
-                        NOT: {
-                            followers: {
-                                some: {
-                                    followerID: userId
+            where: userId
+                ? {
+                    AND: [
+                        { NOT: { id: userId } },
+                        {
+                            NOT: {
+                                followers: {
+                                    some: {
+                                        followerID: userId
+                                    }
                                 }
                             }
                         }
-                    }]
-        },
-        select: {
-            id: true,
-            name: true,
-            username: true, 
-            image: true,
-            _count: {
-                select: {
-                    followers: true,
-                 },
-             }
+                    ]
+                }
+                : { username: { not: null } },
+            select: {
+                id: true,
+                name: true,
+                username: true, 
+                image: true,
+                _count: {
+                    select: {
+                        followers: true,
+                    },
+                }
             },  
-        take: 3,
-    })   
+            take: 8,
+        })   
 
 
     return randomUsers

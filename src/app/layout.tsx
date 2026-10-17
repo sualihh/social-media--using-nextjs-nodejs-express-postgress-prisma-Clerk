@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
 import {
   ClerkProvider
 } from '@clerk/nextjs';
 import { ThemeProvider } from "@/components/ThemeProvider";
 import NavBar from "@/components/NavBar";
-import Sidebar from "@/components/Sidebar";
 import { Toaster } from "react-hot-toast"
+import "./globals.css"
 
 
 const geistSans = localFont({
@@ -22,8 +21,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Social media",
-  description: "modern design app",
+  title: "Hulux | Your social space",
+  description: "A more thoughtful space to share, connect, and talk.",
 };
 
 export default function RootLayout({
@@ -39,23 +38,16 @@ export default function RootLayout({
       >
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
             <div className="min-h-screen">
               <NavBar />
 
-              <main className="py-8">
-                <div className="max-w-7xl mx-auto px-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="hidden lg:block lg:col-span-3">
-                      <Sidebar />
-                    </div>
-                    <div className="lg:col-span-9">
-                      {children}
-                    </div>
-                  </div>
+              <main className="min-h-[calc(100vh-4rem)] bg-[#eff0f5] py-5 sm:py-8">
+                <div className="mx-auto max-w-[1440px] px-3 sm:px-6 lg:px-10">
+                  {children}
                 </div>
               </main>
             </div>

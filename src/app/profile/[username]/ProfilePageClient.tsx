@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { SignInButton, useUser } from "@clerk/nextjs";
+import ImageUpload from "@/components/ImageUpload";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -26,8 +27,10 @@ import {
   FileTextIcon,
   HeartIcon,
   LinkIcon,
+  MessageCircle,
   MapPinIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -38,6 +41,7 @@ interface ProfilePageClientProps {
   user: NonNullable<User>;
   posts: Posts;
   likedPosts: Posts;
+  dbUserId: string | null;
   isFollowing: boolean;
 }
 
@@ -45,30 +49,43 @@ function ProfilePageClient({
   isFollowing: initialIsFollowing,
   likedPosts,
   posts,
+  dbUserId,
   user,
 }: ProfilePageClientProps) {
   const { user: currentUser } = useUser();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isUpdatingFollow, setIsUpdatingFollow] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const [editForm, setEditForm] = useState({
     name: user.name || "",
     bio: user.bio || "",
     location: user.location || "",
     website: user.website || "",
+    image: user.image || "",
   });
 
   const handleEditSubmit = async () => {
+    if (isSavingProfile) return;
+    setIsSavingProfile(true);
     const formData = new FormData();
     Object.entries(editForm).forEach(([key, value]) => {
       formData.append(key, value);
     });
 
-    const result = await updateProfile(formData);
-    if (result.success) {
+    try {
+      const result = await updateProfile(formData);
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to update profile");
+        return;
+      }
       setShowEditDialog(false);
       toast.success("Profile updated successfully");
+    } catch {
+      toast.error("Failed to update profile");
+    } finally {
+      setIsSavingProfile(false);
     }
   };
 
@@ -138,14 +155,22 @@ function ProfilePageClient({
                     Edit Profile
                   </Button>
                 ) : (
-                  <Button
-                    className="w-full mt-4"
-                    onClick={handleFollow}
-                    disabled={isUpdatingFollow}
-                    variant={isFollowing ? "outline" : "default"}
-                  >
-                    {isFollowing ? "Unfollow" : "Follow"}
-                  </Button>
+                  <div className="mt-4 flex w-full gap-2">
+                    <Button
+                      className="flex-1"
+                      onClick={handleFollow}
+                      disabled={isUpdatingFollow}
+                      variant={isFollowing ? "outline" : "default"}
+                    >
+                      {isFollowing ? "Unfollow" : "Follow"}
+                    </Button>
+                    <Button variant="outline" className="flex-1" asChild>
+                      <Link href={`/inbox?to=${user.id}`}>
+                        <MessageCircle className="mr-2 size-4" />
+                        Message
+                      </Link>
+                    </Button>
+                  </div>
                 )}
 
                 {/* LOCATION & WEBSITE */}
@@ -204,7 +229,7 @@ function ProfilePageClient({
           <TabsContent value="posts" className="mt-6">
             <div className="space-y-6">
               {posts.length > 0 ? (
-                posts.map((post) => <PostCard key={post.id} post={post} dbUserId={user.id} />)
+                posts.map((post) => <PostCard key={post.id} post={post} dbUserId={dbUserId} />)
               ) : (
                 <div className="text-center py-8 text-muted-foreground">No posts yet</div>
               )}
@@ -214,7 +239,7 @@ function ProfilePageClient({
           <TabsContent value="likes" className="mt-6">
             <div className="space-y-6">
               {likedPosts.length > 0 ? (
-                likedPosts.map((post) => <PostCard key={post.id} post={post} dbUserId={user.id} />)
+                likedPosts.map((post) => <PostCard key={post.id} post={post} dbUserId={dbUserId} />)
               ) : (
                 <div className="text-center py-8 text-muted-foreground">No liked posts to show</div>
               )}
@@ -228,6 +253,14 @@ function ProfilePageClient({
               <DialogTitle>Edit Profile</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Profile picture</Label>
+                <ImageUpload
+                  endpoint="postImage"
+                  value={editForm.image}
+                  onChange={(image) => setEditForm({ ...editForm, image })}
+                />
+              </div>
               <div className="space-y-2">
                 <Label>Name</Label>
                 <Input
@@ -270,7 +303,9 @@ function ProfilePageClient({
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button onClick={handleEditSubmit}>Save Changes</Button>
+              <Button onClick={handleEditSubmit} disabled={isSavingProfile}>
+                {isSavingProfile ? "Saving..." : "Save Changes"}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

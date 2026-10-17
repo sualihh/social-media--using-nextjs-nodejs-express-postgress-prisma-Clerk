@@ -1,28 +1,40 @@
 "use client";
 
-import { createComment, deletePost, getPosts, toggleLike } from "@/action/post.action";
+import { createComment, deleteComment, deletePost, getPosts, toggleLike } from "@/action/post.action";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Card, CardContent } from "./ui/card";
-import Link from "next/dist/client/link";
+import Link from "next/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { DeleteAlertDialog } from "./DeleteAlertDialog";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { HeartIcon, LogInIcon, MessageCircleIcon, SendIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>
 type Post = Posts[number]
 
- function PostCard({post, dbUserId} : {post: Post, dbUserId: string | null}) {
+ function PostCard({
+   post,
+   dbUserId,
+   tone = "white",
+ }: {
+   post: Post;
+   dbUserId: string | null;
+   tone?: "white" | "blue" | "cream";
+ }) {
 
     const {user} = useUser()
+    const router = useRouter()
     const [newComment, setNewComment] = useState("")
+    const [comments, setComments] = useState(post.comments)
     const [isCommenting, setIsCommenting] = useState(false)
     const [isLiking, setIsLiking] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null)
     const [hasLiked, setHasLiked] = useState(post.likes.some((like) => like.userID === dbUserId))
     const [optmisticLikes, setOptmisticLikes] = useState(post._count.likes)
     const [showComments, setShowComments] = useState(false)
@@ -51,11 +63,27 @@ type Post = Posts[number]
       if (result?.success) {
         toast.success("Comment posted successfully");
         setNewComment("");
+        router.refresh();
       }
     } catch (error) {
       toast.error("Failed to add comment");
     } finally {
       setIsCommenting(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (deletingCommentId) return;
+    setDeletingCommentId(commentId);
+    try {
+      const result = await deleteComment(commentId);
+      if (!result.success) throw new Error(result.error);
+      setComments((current) => current.filter((comment) => comment.id !== commentId));
+      toast.success("Comment deleted");
+    } catch {
+      toast.error("Failed to delete comment");
+    } finally {
+      setDeletingCommentId(null);
     }
   };
 
@@ -65,7 +93,10 @@ type Post = Posts[number]
     try {
       setIsDeleting(true);
       const result = await deletePost(post.id);
-      if (result.success) toast.success("Post deleted successfully");
+      if (result.success) {
+        toast.success("Post deleted successfully");
+        router.refresh();
+      }
       else throw new Error(result.error);
     } catch (error) {
       toast.error("Failed to delete post");
@@ -78,12 +109,14 @@ type Post = Posts[number]
   
 
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-4 sm:p-6">
-        <div className="space-y-4">
-          <div className="flex space-x-3 sm:space-x-6">
+    <Card className={`overflow-hidden rounded-[16px] border-0 shadow-none transition-shadow hover:shadow-sm ${
+      tone === "blue" ? "bg-[#e9f1ff]" : tone === "cream" ? "bg-[#fff6e2]" : "bg-white"
+    }`}>
+      <CardContent className="p-4 sm:p-5">
+        <div className="space-y-3">
+          <div className="flex gap-3">
             <Link href={`/profile/${post.author.username}`}>
-              <Avatar className="size-8 sm:w-10 sm:h-10">
+              <Avatar className="size-9 shrink-0 ring-2 ring-white/80">
                 <AvatarImage src={post.author.image ?? "/avatar.png"} />
               </Avatar>
             </Link>
@@ -93,13 +126,13 @@ type Post = Posts[number]
                 <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 truncate">
                   <Link
                     href={`/profile/${post.author.username}`}
-                    className="font-semibold truncate"
+                    className="truncate text-[13px] font-bold text-slate-900"
                   >
-                    {post.author.name}
+                    {post.author.name ?? post.author.username}
                   </Link>
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
                     <Link href={`/profile/${post.author.username}`}>@{post.author.username}</Link>
-                    <span>•</span>
+                    <span>·</span>
                     <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
                   </div>
                 </div>
@@ -108,40 +141,40 @@ type Post = Posts[number]
                   <DeleteAlertDialog isDeleting={isDeleting} onDelete={handleDeletePost} />
                 )}
               </div>
-              <p className="mt-2 text-sm text-foreground break-words">{post.content}</p>
+              <p className="mt-2 whitespace-pre-wrap break-words text-[12px] leading-[1.65] text-slate-800">{post.content}</p>
             </div>
           </div>
 
           {/* POST IMAGE */}
           {post.image && (
-            <div className="rounded-lg overflow-hidden">
-              <img src={post.image} alt="Post content" className="w-full h-auto object-cover" />
+            <div className="max-h-[420px] overflow-hidden rounded-xl">
+              <img src={post.image} alt="Post content" className="max-h-[420px] w-full object-cover" />
             </div>
           )}
 
 
           {/* LIKE & COMMENT BUTTONS */}
-          <div className="flex items-center pt-2 space-x-4">
+          <div className="flex items-center gap-1 border-t border-slate-900/5 pt-2">
             {user ? (
               <Button
                 variant="ghost"
                 size="sm"
-                className={`text-muted-foreground gap-2 ${
-                  hasLiked ? "text-red-500 hover:text-red-600" : "hover:text-red-500"
+                className={`h-8 gap-1.5 px-2 text-[11px] text-slate-500 ${
+                  hasLiked ? "text-rose-500 hover:text-rose-600" : "hover:text-rose-500"
                 }`}
                 onClick={handleLike}
               >
                 {hasLiked ? (
-                  <HeartIcon className="size-5 fill-current" />
+                  <HeartIcon className="size-4 fill-current" />
                 ) : (
-                  <HeartIcon className="size-5" />
+                  <HeartIcon className="size-4" />
                 )}
                 <span>{optmisticLikes}</span>
               </Button>
             ) : (
               <SignInButton mode="modal">
-                <Button variant="ghost" size="sm" className="text-muted-foreground gap-2">
-                  <HeartIcon className="size-5" />
+                <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-[11px] text-slate-500">
+                  <HeartIcon className="size-4" />
                   <span>{optmisticLikes}</span>
                 </Button>
               </SignInButton>
@@ -150,22 +183,22 @@ type Post = Posts[number]
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground gap-2 hover:text-blue-500"
+              className="h-8 gap-1.5 px-2 text-[11px] text-slate-500 hover:text-sky-600"
               onClick={() => setShowComments((prev) => !prev)}
             >
               <MessageCircleIcon
-                className={`size-5 ${showComments ? "fill-blue-500 text-blue-500" : ""}`}
+                className={`size-4 ${showComments ? "fill-sky-500 text-sky-500" : ""}`}
               />
-              <span>{post.comments.length}</span>
+              <span>{comments.length}</span>
             </Button>
           </div>
 
           {/* COMMENTS SECTION */}
           {showComments && (
-            <div className="space-y-4 pt-4 border-t">
-              <div className="space-y-4">
+            <div className="space-y-4 border-t border-slate-900/5 pt-4">
+              <div className="space-y-3">
                 {/* DISPLAY COMMENTS */}
-                {post.comments.map((comment) => (
+                {comments.map((comment) => (
                   <div key={comment.id} className="flex space-x-3">
                     <Avatar className="size-8 flex-shrink-0">
                       <AvatarImage src={comment.author.image ?? "/avatar.png"} />
@@ -183,6 +216,14 @@ type Post = Posts[number]
                       </div>
                       <p className="text-sm break-words">{comment.content}</p>
                     </div>
+                    {dbUserId === comment.author.id && (
+                      <DeleteAlertDialog
+                        isDeleting={deletingCommentId === comment.id}
+                        onDelete={() => handleDeleteComment(comment.id)}
+                        title="Delete comment"
+                        description="This comment will be permanently removed."
+                      />
+                    )}
                   </div>
                 ))}
               </div>
