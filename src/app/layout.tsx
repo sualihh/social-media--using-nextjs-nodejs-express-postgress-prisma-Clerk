@@ -45,13 +45,21 @@ export default function RootLayout({
             <div className="min-h-screen">
               <NavBar />
 
-              <main className="min-h-[calc(100vh-4rem)] bg-[#eff0f5] py-5 sm:py-8">
+              <main className="min-h-[calc(100vh-4rem)] bg-background py-5 sm:py-8">
                 <div className="mx-auto max-w-[1440px] px-3 sm:px-6 lg:px-10">
                   {children}
                 </div>
               </main>
             </div>
-            <Toaster />
+            <Toaster
+              toastOptions={{
+                style: {
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  color: "hsl(var(--card-foreground))",
+                },
+              }}
+            />
         </ThemeProvider>
       </body>
     </html>

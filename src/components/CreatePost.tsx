@@ -42,14 +42,14 @@ function CreatePost() {
     }  
   return (
     <div>
-      <Card className="mb-5 overflow-hidden rounded-[16px] border-0 bg-[#f6f5f6] shadow-none">
+      <Card className="mb-5 overflow-hidden rounded-[16px] border-0 bg-[#f6f5f6] shadow-none dark:bg-card">
         <CardContent className="p-4">
             <div className="space-y-3">
                 <div className="flex items-start gap-3">
                     <Avatar className="mt-1 size-8 shrink-0 ring-2 ring-white">
                       <AvatarImage src={user?.imageUrl} />
                     </Avatar>
-                    <div className="min-w-0 flex-1 rounded-xl bg-white px-3 py-2 shadow-sm">
+                    <div className="min-w-0 flex-1 rounded-xl bg-background px-3 py-2 shadow-sm">
                       <Textarea 
                         placeholder="Share something with your community..."
                         className="min-h-[46px] resize-none border-none p-1 text-[12px] focus-visible:ring-0"
@@ -62,7 +62,7 @@ function CreatePost() {
 
             {(showImageUpload || imageUrl) && (
 
-              <div className="rounded-xl border border-slate-100 bg-white p-3">
+              <div className="rounded-xl border border-border bg-background p-3">
                 <ImageUpload 
                   endpoint="postImage"
                   value={imageUrl}
@@ -74,13 +74,13 @@ function CreatePost() {
               </div>
             )}
 
-                 <div className="flex items-center justify-between border-t border-slate-200/70 pt-3">
+                 <div className="flex items-center justify-between border-t border-border pt-3">
             <div className="flex gap-1">
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-8 rounded-lg px-2 text-[11px] text-slate-500 hover:bg-white hover:text-violet-600"
+                className="h-8 rounded-lg px-2 text-[11px] text-muted-foreground hover:bg-background hover:text-violet-600"
                 onClick={() => setShowImageUpload(!showImageUpload)}
                 disabled={isPosting}
               >
@@ -89,7 +89,7 @@ function CreatePost() {
               </Button>
             </div>
             <Button
-              className="h-8 rounded-full bg-slate-950 px-4 text-[11px] font-semibold hover:bg-slate-800"
+              className="h-8 rounded-full bg-primary px-4 text-[11px] font-semibold text-primary-foreground hover:bg-primary/90"
               onClick={handleSubmit}
               disabled={(!content.trim() && !imageUrl) || isPosting}
             >

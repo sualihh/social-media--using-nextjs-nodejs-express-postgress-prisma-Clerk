@@ -12,8 +12,8 @@ export default async function HomeRightRail() {
     <div className="space-y-7">
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-bold tracking-tight text-slate-900">Stories</h2>
-          <Link href="/inbox" className="text-[10px] font-medium text-slate-400 hover:text-violet-600">
+          <h2 className="text-[15px] font-bold tracking-tight text-foreground">Stories</h2>
+          <Link href="/inbox" className="text-[10px] font-medium text-muted-foreground hover:text-violet-600">
             See all
           </Link>
         </div>
@@ -35,7 +35,7 @@ export default async function HomeRightRail() {
                 }}
               />
               <span className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-              <span className="absolute left-2 top-2 rounded-full border-2 border-white shadow-md">
+              <span className="absolute left-2 top-2 rounded-full border-2 border-background shadow-md">
                 <Avatar className="size-7">
                   <AvatarImage src={person.image ?? "/avatar.png"} alt="" />
                   <AvatarFallback>{person.name?.slice(0, 1)}</AvatarFallback>
@@ -57,8 +57,8 @@ export default async function HomeRightRail() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-bold tracking-tight text-slate-900">Suggestions</h2>
-          <Link href="/inbox" aria-label="Find people to message" className="text-slate-400 hover:text-violet-600">
+          <h2 className="text-[15px] font-bold tracking-tight text-foreground">Suggestions</h2>
+          <Link href="/inbox" aria-label="Find people to message" className="text-muted-foreground hover:text-violet-600">
             <ArrowRight className="size-4" />
           </Link>
         </div>
@@ -66,28 +66,28 @@ export default async function HomeRightRail() {
           {users.slice(0, 4).map((person) => (
             <div key={person.id} className="flex items-center gap-2">
               <Link href={`/profile/${person.username}`} className="shrink-0">
-                <Avatar className="size-9 ring-2 ring-white">
+                <Avatar className="size-9 ring-2 ring-background">
                   <AvatarImage src={person.image ?? "/avatar.png"} alt="" />
                   <AvatarFallback>{person.name?.slice(0, 1)}</AvatarFallback>
                 </Avatar>
               </Link>
               <div className="min-w-0 flex-1">
-                <Link href={`/profile/${person.username}`} className="block truncate text-[11px] font-semibold text-slate-800 hover:text-violet-700">
+                <Link href={`/profile/${person.username}`} className="block truncate text-[11px] font-semibold text-foreground hover:text-violet-700">
                   {person.name}
                 </Link>
-                <p className="truncate text-[10px] text-slate-400">@{person.username}</p>
+                <p className="truncate text-[10px] text-muted-foreground">@{person.username}</p>
               </div>
               {authUser ? (
                 <FollowButton userId={person.id} />
               ) : (
-                <Link href={`/profile/${person.username}`} className="rounded-full bg-slate-950 px-2.5 py-1 text-[9px] font-semibold text-white hover:bg-slate-700">
+                <Link href={`/profile/${person.username}`} className="rounded-full bg-primary px-2.5 py-1 text-[9px] font-semibold text-primary-foreground hover:bg-primary/90">
                   View
                 </Link>
               )}
             </div>
           ))}
           {users.length === 0 && (
-            <p className="rounded-xl bg-slate-50 px-3 py-4 text-xs leading-relaxed text-slate-500">
+            <p className="rounded-xl bg-muted px-3 py-4 text-xs leading-relaxed text-muted-foreground">
               New people will appear here when they join the community.
             </p>
           )}
@@ -95,12 +95,12 @@ export default async function HomeRightRail() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-[15px] font-bold tracking-tight text-slate-900">Explore</h2>
+        <h2 className="mb-3 text-[15px] font-bold tracking-tight text-foreground">Explore</h2>
         <div className="grid grid-cols-2 gap-2">
-          <ExploreTile title="Design" icon={<Palette className="size-4" />} className="bg-[#edf2ff] text-indigo-600" />
-          <ExploreTile title="Music" icon={<Music2 className="size-4" />} className="bg-[#ffe9f1] text-pink-600" />
-          <ExploreTile title="Photo" icon={<Camera className="size-4" />} className="bg-[#fef4da] text-amber-700" />
-          <ExploreTile title="Creators" icon={<Sparkles className="size-4" />} className="bg-[#f0eaff] text-violet-600" />
+          <ExploreTile title="Design" icon={<Palette className="size-4" />} className="bg-[#edf2ff] text-indigo-600 dark:bg-muted dark:text-foreground" />
+          <ExploreTile title="Music" icon={<Music2 className="size-4" />} className="bg-[#ffe9f1] text-pink-600 dark:bg-muted dark:text-foreground" />
+          <ExploreTile title="Photo" icon={<Camera className="size-4" />} className="bg-[#fef4da] text-amber-700 dark:bg-muted dark:text-foreground" />
+          <ExploreTile title="Creators" icon={<Sparkles className="size-4" />} className="bg-[#f0eaff] text-violet-600 dark:bg-muted dark:text-foreground" />
         </div>
       </section>
     </div>
@@ -109,7 +109,7 @@ export default async function HomeRightRail() {
 
 function StoryPlaceholder({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
-    <div className="flex h-[105px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 text-slate-400">
+    <div className="flex h-[105px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted text-muted-foreground">
       {icon}
       <span className="text-[10px] font-medium">{label}</span>
     </div>

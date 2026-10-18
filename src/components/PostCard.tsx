@@ -109,8 +109,8 @@ type Post = Posts[number]
   
 
   return (
-    <Card className={`overflow-hidden rounded-[16px] border-0 shadow-none transition-shadow hover:shadow-sm ${
-      tone === "blue" ? "bg-[#e9f1ff]" : tone === "cream" ? "bg-[#fff6e2]" : "bg-white"
+    <Card className={`overflow-hidden rounded-[16px] border-0 shadow-none transition-shadow hover:shadow-sm dark:bg-card ${
+      tone === "blue" ? "bg-[#e9f1ff]" : tone === "cream" ? "bg-[#fff6e2]" : "bg-card"
     }`}>
       <CardContent className="p-4 sm:p-5">
         <div className="space-y-3">
@@ -126,11 +126,11 @@ type Post = Posts[number]
                 <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 truncate">
                   <Link
                     href={`/profile/${post.author.username}`}
-                    className="truncate text-[13px] font-bold text-slate-900"
+                    className="truncate text-[13px] font-bold text-foreground"
                   >
                     {post.author.name ?? post.author.username}
                   </Link>
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                     <Link href={`/profile/${post.author.username}`}>@{post.author.username}</Link>
                     <span>·</span>
                     <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
@@ -141,7 +141,7 @@ type Post = Posts[number]
                   <DeleteAlertDialog isDeleting={isDeleting} onDelete={handleDeletePost} />
                 )}
               </div>
-              <p className="mt-2 whitespace-pre-wrap break-words text-[12px] leading-[1.65] text-slate-800">{post.content}</p>
+              <p className="mt-2 whitespace-pre-wrap break-words text-[12px] leading-[1.65] text-foreground">{post.content}</p>
             </div>
           </div>
 
@@ -154,12 +154,12 @@ type Post = Posts[number]
 
 
           {/* LIKE & COMMENT BUTTONS */}
-          <div className="flex items-center gap-1 border-t border-slate-900/5 pt-2">
+          <div className="flex items-center gap-1 border-t border-border pt-2">
             {user ? (
               <Button
                 variant="ghost"
                 size="sm"
-                className={`h-8 gap-1.5 px-2 text-[11px] text-slate-500 ${
+                className={`h-8 gap-1.5 px-2 text-[11px] text-muted-foreground ${
                   hasLiked ? "text-rose-500 hover:text-rose-600" : "hover:text-rose-500"
                 }`}
                 onClick={handleLike}
@@ -173,7 +173,7 @@ type Post = Posts[number]
               </Button>
             ) : (
               <SignInButton mode="modal">
-                <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-[11px] text-slate-500">
+                <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-[11px] text-muted-foreground">
                   <HeartIcon className="size-4" />
                   <span>{optmisticLikes}</span>
                 </Button>
@@ -183,7 +183,7 @@ type Post = Posts[number]
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 gap-1.5 px-2 text-[11px] text-slate-500 hover:text-sky-600"
+              className="h-8 gap-1.5 px-2 text-[11px] text-muted-foreground hover:text-sky-600"
               onClick={() => setShowComments((prev) => !prev)}
             >
               <MessageCircleIcon
@@ -195,7 +195,7 @@ type Post = Posts[number]
 
           {/* COMMENTS SECTION */}
           {showComments && (
-            <div className="space-y-4 border-t border-slate-900/5 pt-4">
+            <div className="space-y-4 border-t border-border pt-4">
               <div className="space-y-3">
                 {/* DISPLAY COMMENTS */}
                 {comments.map((comment) => (

@@ -15,8 +15,8 @@ export default async function Home() {
   ]);
   
   return (
-    <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-[1360px] grid-cols-1 overflow-hidden rounded-[26px] border border-white/80 bg-white shadow-[0_20px_70px_-45px_rgba(30,36,62,0.34)] lg:grid-cols-[190px_minmax(0,1fr)_190px] 2xl:grid-cols-[220px_minmax(0,1fr)_230px]">
-      <aside className="hidden border-r border-slate-100 bg-white lg:block">
+    <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-[1360px] grid-cols-1 overflow-hidden rounded-[26px] border border-border bg-card text-card-foreground shadow-[0_20px_70px_-45px_rgba(30,36,62,0.34)] lg:grid-cols-[190px_minmax(0,1fr)_190px] 2xl:grid-cols-[220px_minmax(0,1fr)_230px]">
+      <aside className="hidden border-r border-border bg-card lg:block">
         <Sidebar />
       </aside>
 
@@ -24,11 +24,11 @@ export default async function Home() {
         <header className="mb-5 flex items-center justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-500">YOUR COMMUNITY</p>
-            <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-tight text-slate-900">News feed</h1>
+            <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-tight text-foreground">News feed</h1>
           </div>
-          <div className="hidden items-center gap-4 text-xs font-medium text-slate-400 sm:flex" aria-label="Feed view">
+          <div className="hidden items-center gap-4 text-xs font-medium text-muted-foreground sm:flex" aria-label="Feed view">
             <span>Recents</span>
-            <span className="text-slate-900">Friends</span>
+            <span className="text-foreground">Friends</span>
             <span>Popular</span>
           </div>
         </header>
@@ -43,15 +43,15 @@ export default async function Home() {
             />
           ))}
           {posts.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-16 text-center">
-              <p className="text-base font-semibold text-slate-800">Your feed is ready for a first post.</p>
-              <p className="mt-2 text-sm text-slate-500">Share something with your community to get started.</p>
+            <div className="rounded-2xl border border-dashed border-border px-6 py-16 text-center">
+              <p className="text-base font-semibold text-foreground">Your feed is ready for a first post.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Share something with your community to get started.</p>
             </div>
           )}
         </div>
       </section>
 
-      <aside className="hidden border-l border-slate-100 bg-white px-3 py-6 lg:block 2xl:px-4">
+      <aside className="hidden border-l border-border bg-card px-3 py-6 lg:block 2xl:px-4">
         <HomeRightRail />
       </aside>
     </div>
