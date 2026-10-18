@@ -223,8 +223,8 @@ export default function InboxClient({
   };
 
   return (
-    <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">
-      <div className="grid h-[clamp(360px,65vh,620px)] min-h-0 grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)]">
+    <section className="h-[calc(100dvh-6.5rem)] min-h-[360px] overflow-hidden rounded-3xl border bg-card shadow-sm sm:h-[calc(100dvh-8rem)]">
+      <div className="grid h-full min-h-0 grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)]">
         <aside
           className={`min-h-0 border-b bg-background/70 md:border-b-0 md:border-r ${
             activeConversationId ? "hidden md:flex" : "flex"
